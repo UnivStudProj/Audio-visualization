@@ -1,4 +1,4 @@
-var context, analyser, src, array;
+var context, analyser, src, array, gainNode;
 
 const container1 = document.getElementById('c1');
 const container2 = document.getElementById('c2');
@@ -17,19 +17,37 @@ window.onclick = function() {
     }
 }
 
-const rectangles1 = new Array(60);
-const rectangles2 = new Array(60);
+const w = innerWidth;
+const rAmount = 60;
+const rMargins = 2; // left + right in px
+const rWidth = w / rAmount - rMargins;
 
-for (let i = 0; i < rectangles1.length; i++) {
-    let rect1 = document.createElement('div');
-    rect1.className = 'rectangle rectangle--hidden';
-    container1.appendChild(rect1);
-    rectangles1[i] = rect1;
+class CustomRect {
+    constructor(className, container) {
+        this.className =  className;
+        this.container = container;
+        this.rect = null;
+        this.#rCrate();
+    }
 
-    let rect2 = document.createElement('div');
-    rect2.className = 'rectangle rectangle--shadow rectangle--hidden';
-    container2.appendChild(rect2);
-    rectangles2[i] = rect2;
+    #rCrate() {
+        this.rect = document.createElement('div');
+        this.rect.className = this.className;
+        this.rect.style.marginLeft = this.rect.style.marginRight = `${rMargins / 2}px`;
+        this.rect.style.width = `${rWidth}px`;
+        this.container.appendChild(this.rect);
+    }
+}
+
+const mainRectangles = new Array(rAmount);
+const shadowRectangles = new Array(rAmount);
+
+for (let i = 0; i < rAmount; i++) {
+    let mRect = new CustomRect('rectangle', container1);
+    mainRectangles[i] = mRect;
+
+    let sRect = new CustomRect('rectangle rectangle--shadow', container2);
+    shadowRectangles[i] = sRect;
 }
 
 
@@ -40,11 +58,12 @@ function preparation() {
     src.connect(analyser);
     analyser.connect(context.destination);
 
-    let gainNode = context.createGain();
-    gainNode.gain.value = 0.1;
-    gainNode.connect(context.destination);
     loop();
 }
+
+const maxHeight = Math.floor(innerHeight / 2);
+const maxInt = 255;
+const heightOffset = maxHeight / maxInt;
 
 function loop() {
     if (!audio.paused) {
@@ -54,8 +73,12 @@ function loop() {
     array = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(array);
 
-    for (let i = 0; i < rectangles1.length; i++) {
-        rectangles1[i].style.height = array[i];
-        rectangles2[i].style.height = array[i];
+    for (let i = 0; i < mainRectangles.length; i++) {
+        // Last elements seems not changes a lot
+        // and because of it let's decrease step by 5
+        let curr_i = Math.floor(i * (array.length / mainRectangles.length - 5));
+        let curr_height = array[curr_i] * heightOffset;
+        mainRectangles[i].rect.style.height = `${curr_height}px`;
+        shadowRectangles[i].rect.style.height = `${curr_height}px`;
     }
 }

@@ -20,23 +20,17 @@ body {
 }
 
 .rectangle {
-    width: 30px;
-    height: 10px;
-    margin: 1px;
+    min-height: 2px;
     transform: rotatex(180deg);
     transform-origin: top;
 
     background: #FEEDFF;
     box-shadow: 0px 0px 5px #CC35F6; 
-    transition: height 0.5s;
+    transition: height 0.01s;
 }
 
 .rectangle--shadow {
     background: #FF55FE;
     transform: none;
     filter: blur(3px);
-}
-
-.rectangle--hidden {
-    height: 40vh;
 }
