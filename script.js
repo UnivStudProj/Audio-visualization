@@ -17,10 +17,9 @@ window.onclick = function() {
     }
 }
 
-const w = innerWidth;
 const rAmount = 60;
-const rMargins = 2; // left + right in px
-const rWidth = w / rAmount - rMargins;
+const rMargins = 2; // margin-left + margin-right in px
+const rWidth = innerWidth / rAmount - rMargins;
 
 class CustomRect {
     constructor(className, container) {
@@ -33,30 +32,30 @@ class CustomRect {
     #rCrate() {
         this.rect = document.createElement('div');
         this.rect.className = this.className;
-        this.rect.style.marginLeft = this.rect.style.marginRight = `${rMargins / 2}px`;
         this.rect.style.width = `${rWidth}px`;
         this.container.appendChild(this.rect);
     }
 }
 
 const mainRectangles = new Array(rAmount);
-const shadowRectangles = new Array(rAmount);
+const mirrorRectangles = new Array(rAmount);
 
 for (let i = 0; i < rAmount; i++) {
     let mRect = new CustomRect('rectangle', container1);
     mainRectangles[i] = mRect;
 
-    let sRect = new CustomRect('rectangle rectangle--shadow', container2);
-    shadowRectangles[i] = sRect;
+    let mrrRect = new CustomRect('rectangle rectangle--mirror', container2);
+    mirrorRectangles[i] = mrrRect;
 }
-
 
 function preparation() {
     context = new AudioContext();
     analyser = context.createAnalyser();
+    gainNode = context.createGain();
     src = context.createMediaElementSource(audio);
-    src.connect(analyser);
-    analyser.connect(context.destination);
+    src.connect(analyser).connect(gainNode).connect(context.destination);
+    
+    gainNode.gain.value = 0.5;
 
     loop();
 }
@@ -77,8 +76,12 @@ function loop() {
         // Last elements seems not changes a lot
         // and because of it let's decrease step by 5
         let curr_i = Math.floor(i * (array.length / mainRectangles.length - 5));
-        let curr_height = array[curr_i] * heightOffset;
-        mainRectangles[i].rect.style.height = `${curr_height}px`;
-        shadowRectangles[i].rect.style.height = `${curr_height}px`;
+        let curr_height = Math.floor(array[curr_i] * heightOffset);
+
+        let mRectStyle = mainRectangles[i].rect.style;
+        let mrrRectStyle = mirrorRectangles[i].rect.style;
+        
+        mRectStyle.height = `${curr_height}px`;
+        mrrRectStyle.height = `${curr_height}px`;
     }
 }

@@ -1,7 +1,9 @@
 body {
     margin: 0;
     overflow: hidden;
-    background: #1e1e1e;
+    background: linear-gradient(hsl(282, 100%, 10%), hsl(282, 100%, 30%), hsl(282, 100%, 10%));
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .container {
@@ -11,25 +13,27 @@ body {
 
 
 .container {
-
     margin-top: 50vh;
 }
 
-#c2 {
+#c2, #c3 {
     position: fixed;
 }
 
 .rectangle {
     min-height: 2px;
+    margin-left: 1px;
+    margin-right: 1px;
     transform: rotatex(180deg);
     transform-origin: top;
 
-    background: #FEEDFF;
-    box-shadow: 0px 0px 5px #CC35F6; 
-    transition: height 0.01s;
+    background: #FDEDFA;
+    box-shadow: 0px 0px 10px #CC35F6;
+    transition: height 0.075s;
+    z-index: 2;
 }
 
-.rectangle--shadow {
+.rectangle--mirror {
     background: #FF55FE;
     transform: none;
     filter: blur(3px);
