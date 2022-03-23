@@ -1,8 +1,9 @@
-var context, analyser, src, array, gainNode;
+var context, analyser, src, array, gainNode, fps;
 
 const container1 = document.getElementById('c1');
 const container2 = document.getElementById('c2');
 const audio = document.querySelector('audio');
+const fpsEl = document.getElementById('fps_drops');
 
 window.onclick = function() {
     if (!context) {
@@ -19,7 +20,20 @@ window.onclick = function() {
 
 const rAmount = 60;
 const rMargins = 2; // margin-left + margin-right in px
-const rWidth = innerWidth / rAmount - rMargins;
+const rWidth = includeDecimal() - rMargins;
+
+// TODO: include decimals when not integer 
+
+function includeDecimal() {
+    if (innerWidth % rAmount == 0) { 
+        return innerWidth / rAmount;
+    } else {
+        let decimal = innerWidth / rAmount % 1;
+        console.log(innerWidth / rAmount);
+        console.log(innerWidth, rAmount, decimal);
+        return Math.floor(innerWidth / rAmount) + decimal;
+    }
+}
 
 class CustomRect {
     constructor(className, container) {
@@ -64,7 +78,16 @@ const maxHeight = Math.floor(innerHeight / 2);
 const maxInt = 255;
 const heightOffset = maxHeight / maxInt;
 
+var lastloop = new Date();
 function loop() {
+    let thisloop = new Date();
+    fps = 1000 / (thisloop - lastloop);
+    lastloop = thisloop;
+
+    if (Math.floor(fps) < 75) {
+        fpsEl.innerHTML++;
+    }
+
     if (!audio.paused) {
         window.requestAnimationFrame(loop);
     }
