@@ -19,21 +19,8 @@ window.onclick = function() {
 }
 
 const rAmount = 60;
-const rMargins = 2; // margin-left + margin-right in px
-const rWidth = includeDecimal() - rMargins;
-
-// TODO: include decimals when not integer 
-
-function includeDecimal() {
-    if (innerWidth % rAmount == 0) { 
-        return innerWidth / rAmount;
-    } else {
-        let decimal = innerWidth / rAmount % 1;
-        console.log(innerWidth / rAmount);
-        console.log(innerWidth, rAmount, decimal);
-        return Math.floor(innerWidth / rAmount) + decimal;
-    }
-}
+const rMargins = 4; // margin-left + margin-right in px
+const rWidth = innerWidth / rAmount - rMargins;
 
 class CustomRect {
     constructor(className, container) {
@@ -54,6 +41,7 @@ class CustomRect {
 const mainRectangles = new Array(rAmount);
 const mirrorRectangles = new Array(rAmount);
 
+// creating 2 types of rectangles
 for (let i = 0; i < rAmount; i++) {
     let mRect = new CustomRect('rectangle', container1);
     mainRectangles[i] = mRect;
@@ -79,18 +67,22 @@ const maxInt = 255;
 const heightOffset = maxHeight / maxInt;
 
 var lastloop = new Date();
+var fps_arr = new Array(50);
+
 function loop() {
     let thisloop = new Date();
-    fps = 1000 / (thisloop - lastloop);
+    fps = Math.floor(1000 / (thisloop - lastloop));
     lastloop = thisloop;
 
-    if (Math.floor(fps) < 75) {
-        fpsEl.innerHTML++;
-    }
+    if (typeof fps_arr[fps_arr.length - 1] != 'undefined') fps_arr.shift();
+    fps_arr.push(fps);
 
-    if (!audio.paused) {
-        window.requestAnimationFrame(loop);
-    }
+    let fps_sum = 0;
+    fps_arr.forEach(num => {
+        fps_sum += num;
+    });
+
+    fpsEl.innerHTML = Math.floor(fps_sum / fps_arr.length);
 
     array = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(array);
@@ -98,13 +90,16 @@ function loop() {
     for (let i = 0; i < mainRectangles.length; i++) {
         // Last elements seems not changes a lot
         // and because of it let's decrease step by 5
-        let curr_i = Math.floor(i * (array.length / mainRectangles.length - 5));
+        let curr_i = i * Math.floor(array.length / mainRectangles.length - 5);
         let curr_height = Math.floor(array[curr_i] * heightOffset);
 
         let mRectStyle = mainRectangles[i].rect.style;
         let mrrRectStyle = mirrorRectangles[i].rect.style;
         
-        mRectStyle.height = `${curr_height}px`;
-        mrrRectStyle.height = `${curr_height}px`;
+        mRectStyle.height = mrrRectStyle.height = `${curr_height}px`;
+    }
+
+    if (!audio.paused) {
+        window.requestAnimationFrame(loop);
     }
 }
