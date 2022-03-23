@@ -44,3 +44,32 @@ body {
     color: hsla(108, 100%, 50%, 0.644);
     font-size: 25px;
 }
+
+.custom-field input {
+    border: none;
+    appearance: none;
+    background: hsla(0, 30%, 50%, 0.2);
+    border-radius: 3px;
+    width: 250px;
+    outline: none;
+    font-size: 14px;
+}
+
+.custom-field .placeholder {
+    position: absolute;
+    left: 12px;
+    top: calc(50% + 10px);
+    transform: translateY(-50%);
+    color: #aaa;
+    transition: 
+        top 0.3s ease,
+        font-size 0.3s ease,
+        color 0.3s ease;
+}
+
+.custom-field input:valid + .placeholder,
+.custom-field input:focus + .placeholder {
+    top: calc(50% - 10px);
+    color: #FDEDFA;
+    text-shadow: 0px 0px 10px #FF55FE;
+}

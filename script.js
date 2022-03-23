@@ -5,18 +5,18 @@ const container2 = document.getElementById('c2');
 const audio = document.querySelector('audio');
 const fpsEl = document.getElementById('fps_drops');
 
-window.onclick = function() {
-    if (!context) {
-        preparation();
-    }
+// window.onclick = function() {
+//     if (!context) {
+//         preparation();
+//     }
 
-    if (audio.paused) {
-        audio.play();
-        loop();
-    } else {
-        audio.pause();
-    }
-}
+//     if (audio.paused) {
+//         audio.play();
+//         loop();
+//     } else {
+//         audio.pause();
+//     }
+// }
 
 const rAmount = 60;
 const rMargins = 4; // margin-left + margin-right in px

@@ -1,12 +1,10 @@
 import subprocess
 import os
 import pafy
-import eel
 
 isNormalStream = False
 
 
-@eel.expose
 def call_from_js(link):
     video = pafy.new(link)
     audio_type = check_audiostreams(video.audiostreams)
