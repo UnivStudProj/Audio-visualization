@@ -15,9 +15,10 @@
         <audio src="temp/2.webm"></audio>
         <p id="fps_drops">0</p>
         <label class="custom-field">
-            <input type="url" pattern="https://www.youtube.com/watch?v=.*" required>
+            <input type="text" required pattern="(https\:\/\/www\.youtube\.com\/watch\?\v\=).(\w{11})">
             <spann class="placeholder">Enter text</spann>
         </label>
         <script src="script.js"></script>
+        <script src="linkHandler.js"></script>
     </body>
 </html>
