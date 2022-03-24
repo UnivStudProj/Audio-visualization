@@ -55,8 +55,11 @@ function preparation() {
     analyser = context.createAnalyser();
     gainNode = context.createGain();
     src = context.createMediaElementSource(audio);
-    src.connect(analyser).connect(gainNode).connect(context.destination);
-    
+    src
+        .connect(analyser)
+        .connect(gainNode)
+        .connect(context.destination);
+
     gainNode.gain.value = 0.5;
 
     loop();

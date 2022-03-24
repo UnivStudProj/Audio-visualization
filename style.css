@@ -11,7 +11,6 @@ body {
     display: flex;
 }
 
-
 .container {
     margin-top: 50vh;
 }
@@ -61,17 +60,22 @@ body {
     font-size: 14px;
     outline: none;
     transition:
+        visibility 0.3s,
+        opacity 0.3s,
         border-color 0.3s,
         box-shadow 0.3s;
 }
 
 .placeholder {
     position: fixed;
+    pointer-events: none;
     top: calc(30px + 11px);
     right: calc(85px + 220px);
     transform: translateY(-50%);
     color: hsla(311, 80%, 96%, 0.1);
-    transition: 
+    transition:
+        visibility 0.3s,
+        opacity 0.3s,
         top 0.3s ease,
         font-size 0.3s ease,
         color 0.3s ease;
@@ -91,7 +95,7 @@ input:focus {
     box-shadow: 0px 0px 10px hsla(300, 100%, 67%, 1);
 }
 
-#button {
+#sendButton {
     position: fixed;
     top: calc(30px - 6px);
     font-family: Arial, Helvetica, serif;
@@ -104,13 +108,36 @@ input:focus {
     border: 2px solid hsla(311, 80%, 96%, 0.1);
     border-radius: 10px;
     transition:
+        visibility 0.3s,
+        opacity 0.3s,
         color 0.3s,
         border-color 0.3s;
 }
 
-#button:hover {
+#sendButton:hover {
     cursor: pointer;
     color: hsla(311, 80%, 96%, 1);
     border-color: hsla(311, 80%, 96%, 1);
     box-shadow: 0px 0px 10px hsla(300, 100%, 67%, 1);
+}
+
+.audio-controls {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    line-height: 30px;
+    top: 20px;
+    left: 50%;
+}
+
+#playButton, #stopButton {
+    width: 30%;
+    height: auto;
+    opacity: 0.3;
+    transition: opacity 0.3s, filter 0.3s;
+}
+
+#playButton:hover, #stopButton:hover {
+    opacity: 1;
+    filter: drop-shadow(0px 0px 5px hsla(300, 100%, 67%, 1));
 }
