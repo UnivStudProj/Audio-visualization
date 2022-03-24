@@ -5,11 +5,8 @@ const placeHolder = document.getElementsByClassName('placeholder');
 
 sendButton.addEventListener('click', sendEvent);
 
-function sendEvent() {
-    sendButton.removeEventListener('click', sendEvent);
-    let url = inputEl.value;
-    console.log(url);
-
+// hiding input and send button after pressing it
+function hideElements() {
     inputEl.style.opacity = 0;
     sendButton.style.opacity = 0;
     placeHolder[0].style.opacity = 0;
@@ -17,5 +14,22 @@ function sendEvent() {
     inputEl.style.visibility = 'hidden';
     sendButton.style.visibility = 'hidden';
     placeHolder[0].style.visibility = 'hidden';
+}
 
+function sendEvent() {
+    sendButton.removeEventListener('click', sendEvent);
+    hideElements();
+
+    let url = inputEl.value;
+    callPython(url);
+
+}
+
+async function callPython(url) {
+    await eel.fromJS(url);
+}
+
+eel.expose(toJS);
+function toJS(test) {
+    console.log(test);
 }

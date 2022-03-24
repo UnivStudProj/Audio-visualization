@@ -1,9 +1,19 @@
 import subprocess
 import os
 import pafy
+import eel
+from time import sleep
 
+eel.init('web')
 isNormalStream = False
 
+
+# Request from JS
+@eel.expose
+def fromJS(s):
+    d = s*2
+    sleep(3)
+    eel.toJS(d);
 
 def call_from_js(link):
     video = pafy.new(link)
@@ -37,4 +47,6 @@ def check_audiostreams(audiostreams):
             return a.extension
         
     return 'any'
-        
+
+
+eel.start('index.html');
