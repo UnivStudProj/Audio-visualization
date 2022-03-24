@@ -39,41 +39,78 @@ body {
 }
 
 #fps_drops {
+    top: 0;
     margin: 0;
     position: fixed;
     color: hsla(108, 100%, 50%, 0.644);
     font-size: 25px;
 }
 
-.custom-field input {
-    border: none;
-    appearance: none;
-    background: hsla(0, 30%, 50%, 0.2);
-    border-radius: 3px;
-    width: 250px;
-    outline: none;
-    font-size: 14px;
+.custom-field {
+    top: 30px;
+    right: 85px;
+    position: fixed;
 }
 
-.custom-field .placeholder {
-    position: absolute;
-    left: 12px;
-    top: calc(50% + 10px);
+.custom-field input {
+    color: white;
+    border: 2px solid hsla(311, 80%, 96%, 0.1);
+    border-radius: 3px;
+    background: transparent;
+    width: 250px;
+    font-size: 14px;
+    outline: none;
+    transition:
+        border-color 0.3s,
+        box-shadow 0.3s;
+}
+
+.placeholder {
+    position: fixed;
+    top: calc(30px + 11px);
+    right: calc(85px + 220px);
     transform: translateY(-50%);
-    color: #aaa;
+    color: hsla(311, 80%, 96%, 0.1);
     transition: 
         top 0.3s ease,
         font-size 0.3s ease,
         color 0.3s ease;
 }
 
-.custom-field input:valid + .placeholder,
-.custom-field input:focus + .placeholder {
-    top: calc(50% - 10px);
-    color: #FDEDFA;
+input:valid + .placeholder,
+input:focus + .placeholder {
+    top: calc(30px - 15px);
+    font-size: 20px;
+    color: hsla(311, 80%, 96%, 1);
     text-shadow: 0px 0px 10px #FF55FE;
 }
 
-.custom-field input:invalid {
-    color: red;
+input:valid,
+input:focus {
+    border-color: hsla(311, 80%, 96%, 1);
+    box-shadow: 0px 0px 10px hsla(300, 100%, 67%, 1);
+}
+
+#button {
+    position: fixed;
+    top: calc(30px - 6px);
+    font-family: Arial, Helvetica, serif;
+    width: 50px;
+    line-height: 30px;
+    float: right;
+    text-align: center;
+    margin-left: 10px;
+    color: hsla(311, 80%, 96%, 0.1);
+    border: 2px solid hsla(311, 80%, 96%, 0.1);
+    border-radius: 10px;
+    transition:
+        color 0.3s,
+        border-color 0.3s;
+}
+
+#button:hover {
+    cursor: pointer;
+    color: hsla(311, 80%, 96%, 1);
+    border-color: hsla(311, 80%, 96%, 1);
+    box-shadow: 0px 0px 10px hsla(300, 100%, 67%, 1);
 }
