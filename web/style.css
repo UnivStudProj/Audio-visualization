@@ -124,12 +124,13 @@ input:focus {
 .audio-controls {
     position: fixed;
     display: flex;
+    width: 140px;
     top: 20px;
-    left: calc(50% - 50px);
+    left: calc(50% - 70px);
 }
 
 #playButton, #stopButton {
-    width: 25%;
+    width: 70px;
     height: auto;
     opacity: 0.3;
     transition: opacity 0.3s, filter 0.3s;

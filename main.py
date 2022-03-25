@@ -2,27 +2,47 @@ import subprocess
 import os
 import pafy
 import eel
-from time import sleep
 
 eel.init('web')
 isNormalStream = False
+message = {
+    'type' : None,
+    'text' : None
+}
 
 
 # Request from JS
 @eel.expose
-def fromJS(s):
-    d = s*2
-    sleep(3)
-    eel.toJS(d);
+def fromJS(url):
+    res = getAudio(url)
 
-def call_from_js(link):
-    video = pafy.new(link)
+    # Call JS function
+    eel.toJS(res);
+    
+
+def messageFormat(messageType, messageText):
+    global message
+    message['type'] = messageType
+    message['text'] = messageText
+
+
+def getAudio(link):
+    try:
+        video = pafy.new(link)
+    except ValueError as e:
+        return {'type' : 'error', 'text' : str(e)}
+        
     audio_type = check_audiostreams(video.audiostreams)
     best_audio = video.getbestaudio(preftype=audio_type)
     
-    fp = f'./temp/t_aud.{best_audio.extensio}'
+    fp = f'./temp/t_aud.{best_audio.extension}'
     best_audio.download(filepath=fp)
-    audio_name = convert_to_mp3(fp) if isNormalStream else fp
+    convert_to_mp3(fp) if isNormalStream else fp
+    
+    messageFormat('string', best_audio.url)
+    
+    return message
+    
     
 
 def convert_to_mp3(filePath):

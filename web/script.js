@@ -5,18 +5,29 @@ const container2 = document.getElementById('c2');
 const audio = document.querySelector('audio');
 const fpsEl = document.getElementById('fps_drops');
 
-// window.onclick = function() {
-//     if (!context) {
-//         preparation();
-//     }
+const playButton = document.getElementById('playButton');
+const stopButton = document.getElementById('stopButton');
 
-//     if (audio.paused) {
-//         audio.play();
-//         loop();
-//     } else {
-//         audio.pause();
-//     }
-// }
+playButton.addEventListener('click', playAudio);
+stopButton.addEventListener('click', stopAudio);
+
+function playAudio() {
+    if (!context) {
+        preparation();
+    }
+
+    if (audio.paused) {
+        audio.play();
+        loop();
+    } else {
+        audio.pause();
+    }
+}
+
+function stopAudio() {
+    audio.pause();
+    audio.currentTime = 0;
+}
 
 const rAmount = 60;
 const rMargins = 4; // margin-left + margin-right in px
@@ -69,8 +80,8 @@ const maxHeight = Math.floor(innerHeight / 2);
 const maxInt = 255;
 const heightOffset = maxHeight / maxInt;
 
-var lastloop = new Date();
 var fps_arr = new Array(50);
+var lastloop = new Date();
 
 function loop() {
     let thisloop = new Date();
@@ -104,5 +115,9 @@ function loop() {
 
     if (!audio.paused) {
         window.requestAnimationFrame(loop);
+    } else {
+        for (let i = 0; i < mainRectangles.length; i++) {
+            mainRectangles[i].rect.style.height = mirrorRectangles[i].rect.style.height = '2px';
+        }
     }
 }
