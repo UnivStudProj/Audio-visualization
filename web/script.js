@@ -9,7 +9,6 @@ const playButton = document.getElementById('playButton');
 const stopButton = document.getElementById('stopButton');
 
 playButton.addEventListener('click', playAudio);
-stopButton.addEventListener('click', stopAudio);
 
 function playAudio() {
     if (!context) {
@@ -18,15 +17,12 @@ function playAudio() {
 
     if (audio.paused) {
         audio.play();
+        playButton.src = 'materials/pause.svg';
         loop();
     } else {
         audio.pause();
+        playButton.src = 'materials/play.svg';
     }
-}
-
-function stopAudio() {
-    audio.pause();
-    audio.currentTime = 0;
 }
 
 const rAmount = 60;
@@ -66,10 +62,7 @@ function preparation() {
     analyser = context.createAnalyser();
     gainNode = context.createGain();
     src = context.createMediaElementSource(audio);
-    src
-        .connect(analyser)
-        .connect(gainNode)
-        .connect(context.destination);
+    src.connect(analyser).connect(gainNode).connect(context.destination);
 
     gainNode.gain.value = 0.5;
 
@@ -102,8 +95,26 @@ function loop() {
     analyser.getByteFrequencyData(array);
 
     for (let i = 0; i < mainRectangles.length; i++) {
+        //          Step variants           //
+        //
+        // From the start:
+        // let curr_i = i;
+        //
+        // From the start with scaled step:
+        // let curr_i = i * Math.floor(array.length / mainRectangles.length);
+        // 
+        // From the middle:
+        // let curr_i = i + Math.floor(array.length / 2 - mainRectangles.length / 2);
+        //
+        // From the end:
+        // let curr_i = i + Math.floor(array.length - mainRectangles.length);
+        //
+        //////////////////////////////////////
+
+        // There will be used with 2nd one variant
         // Last elements seems not changes a lot
         // and because of it let's decrease step by 5
+
         let curr_i = i * Math.floor(array.length / mainRectangles.length - 5);
         let curr_height = Math.floor(array[curr_i] * heightOffset);
 
@@ -115,9 +126,5 @@ function loop() {
 
     if (!audio.paused) {
         window.requestAnimationFrame(loop);
-    } else {
-        for (let i = 0; i < mainRectangles.length; i++) {
-            mainRectangles[i].rect.style.height = mirrorRectangles[i].rect.style.height = '2px';
-        }
     }
 }

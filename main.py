@@ -5,44 +5,30 @@ import eel
 
 eel.init('web')
 isNormalStream = False
-message = {
-    'type' : None,
-    'text' : None
-}
+
+
+def messageFormat(messageType, messageText):
+    message = {
+        'type' : messageType,
+        'text' : messageText
+    }
+    
+    return message
 
 
 # Request from JS
 @eel.expose
 def fromJS(url):
-    res = getAudio(url)
-
-    # Call JS function
-    eel.toJS(res);
-    
-
-def messageFormat(messageType, messageText):
-    global message
-    message['type'] = messageType
-    message['text'] = messageText
-
-
-def getAudio(link):
+    # Return error if a link is invalid
     try:
-        video = pafy.new(link)
+        video = pafy.new(url)
+        audio_type = check_audiostreams(video.audiostreams)
+        best_audio = video.getbestaudio(preftype=audio_type)
+        message = messageFormat('string', best_audio.url)
     except ValueError as e:
-        return {'type' : 'error', 'text' : str(e)}
-        
-    audio_type = check_audiostreams(video.audiostreams)
-    best_audio = video.getbestaudio(preftype=audio_type)
-    
-    fp = f'./temp/t_aud.{best_audio.extension}'
-    best_audio.download(filepath=fp)
-    convert_to_mp3(fp) if isNormalStream else fp
-    
-    messageFormat('string', best_audio.url)
-    
-    return message
-    
+        message = messageFormat('error', str(e))
+    # Call JS function
+    eel.toJS(message);
     
 
 def convert_to_mp3(filePath):

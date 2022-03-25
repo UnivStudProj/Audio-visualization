@@ -4,6 +4,19 @@ const sendButton = document.getElementById('sendButton');
 const placeHolder = document.getElementsByClassName('placeholder');
 
 sendButton.addEventListener('click', sendEvent);
+stopButton.addEventListener('click', stopAudio);
+audio.addEventListener('ended', (event) => {
+    for (let i = 0; i < mainRectangles.length; i++) {
+        mainRectangles[i].rect.style.height = mirrorRectangles[i].rect.style.height = '2px';
+    }
+    elementsApperance('show', inputEl, sendButton, placeHolder[0])
+    playButton.src = 'materials/play.svg';
+});
+
+function stopAudio() {
+    audio.pause();
+    audio.currentTime = audio.duration;
+}
 
 // hiding input and send button after pressing it
 function elementsApperance(mode, ...elements) {
@@ -13,8 +26,10 @@ function elementsApperance(mode, ...elements) {
         el_opacity = 0;
         el_visibility = 'hidden';
     } else if (mode == 'show') {
+        inputEl.value = '';
         el_opacity = 1;
         el_visibility = 'visible';
+        sendButton.addEventListener('click', sendEvent);
     }
 
     elements.forEach(element => {
