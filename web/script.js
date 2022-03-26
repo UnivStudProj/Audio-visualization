@@ -117,7 +117,7 @@ function loop() {
     for (let i = 0; i < mainRectangles.length; i++) {
         let curr_i = i * (array.length / mainRectangles.length);
         mainRectangles[i].rect.style.height = `${array[curr_i] * heightOffset}px`;
-        mirrorRectangles[i].rect.style.height = `${array[curr_i]}px`;
+        mirrorRectangles[i].rect.style.height = `${array[curr_i] * heightOffset}px`;
     }
 
     if (!audio.paused) {

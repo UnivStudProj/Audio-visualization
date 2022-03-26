@@ -4,15 +4,6 @@ import eel
 eel.init('web')
 
 
-def messageFormat(messageType, messageText):
-    message = {
-        'type' : messageType,
-        'text' : messageText
-    }
-    
-    return message
-
-
 # Request from JS
 @eel.expose
 def fromJS(url):
@@ -21,9 +12,17 @@ def fromJS(url):
         video = pafy.new(url)
         audio_type = check_audiostreams(video.audiostreams)
         best_audio = video.getbestaudio(preftype=audio_type)
-        message = messageFormat('string', best_audio.url)
+        
+        message = {
+            'type'          : 'string',
+            'url'           : best_audio.url,
+            'thumbnail'     : video.getbestthumb(),
+            'title'         : video.title,
+            'duration'      : video.duration
+        }
     except ValueError as e:
-        message = messageFormat('error', str(e))
+        message = { 'type' : 'error', 'text' : str(e)}
+    
     # Call JS function
     eel.toJS(message);
 

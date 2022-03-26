@@ -3,12 +3,15 @@ const inputEl = document.querySelector('input');
 const sendButton = document.getElementById('sendButton');
 const placeHolder = document.getElementsByClassName('placeholder');
 
+const audiothumb = document.getElementById('audio-thumbnail');
+const audiotitle = document.getElementById('audio-title');
+const audioTime = document.getElementById('audio-time');
 
 sendButton.addEventListener('click', sendEvent);
 stopButton.addEventListener('click', stopAudio);
 audio.addEventListener('ended', resetAudio);
 
-function resetHeight() {
+function wait() {
     return new Promise(resolve => {
         setTimeout(() => { 
             for (let i = 0; i < mainRectangles.length; i++) {
@@ -20,8 +23,7 @@ function resetHeight() {
 }
 
 async function resetAudio() {
-    const res = await resetHeight();
-    console.log(res);
+    await wait();
     elementsApperance('show', inputEl, sendButton, placeHolder[0])
     playButton.src = 'materials/play.svg';
 };
@@ -77,6 +79,9 @@ function toJS(msg) {
         sendButton.addEventListener('click', sendEvent);
     } else {
         audio.crossOrigin = 'anonymous';
-        audio.src = msg.text;
+        audio.src = msg.url;
+        audiothumb.src = msg.thumbnail;
+        audiotitle.innerHTML = msg.title;
+        audioTime.innerHTML = msg.duration;
     }
 }
