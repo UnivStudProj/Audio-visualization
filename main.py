@@ -1,10 +1,7 @@
-import subprocess
-import os
 import pafy
 import eel
 
 eel.init('web')
-isNormalStream = False
 
 
 def messageFormat(messageType, messageText):
@@ -29,25 +26,12 @@ def fromJS(url):
         message = messageFormat('error', str(e))
     # Call JS function
     eel.toJS(message);
-    
-
-def convert_to_mp3(filePath):
-    global isNormalStream
-    abs_path = os.path.abspath(filePath)
-    subprocess.call(
-        ['ffmpeg', '-i', abs_path, '-hide_banner', abs_path[:abs_path.index('.')] + '_n.mp3']
-    )
-    os.remove(filePath)
-    isNormalStream = False 
-    
-    return './temp/t_aud_n.mp3'
 
 
 def check_audiostreams(audiostreams):
     global isNormalStream
     if not audiostreams:
-        isNormalStream = True
-        return
+        raise ValueError('No audiostreams were found')
     for a in audiostreams:
         if a.extension == 'mp3':
             return a.extension

@@ -3,7 +3,7 @@ var context, analyser, src, array, gainNode, fps;
 const container1 = document.getElementById('c1');
 const container2 = document.getElementById('c2');
 const audio = document.querySelector('audio');
-const fpsEl = document.getElementById('fps_drops');
+const performanceEl = document.getElementById('performance');
 
 const playButton = document.getElementById('playButton');
 const stopButton = document.getElementById('stopButton');
@@ -25,7 +25,7 @@ function playAudio() {
     }
 }
 
-const rAmount = 60;
+const rAmount = 64;
 const rMargins = 4; // margin-left + margin-right in px
 const rWidth = innerWidth / rAmount - rMargins;
 
@@ -65,6 +65,8 @@ function preparation() {
     src.connect(analyser).connect(gainNode).connect(context.destination);
 
     gainNode.gain.value = 0.5;
+    analyser.fftSize = rAmount * 2;
+    analyser.smoothingTimeConstant = 0.8;
 
     loop();
 }
@@ -74,57 +76,52 @@ const maxInt = 255;
 const heightOffset = maxHeight / maxInt;
 
 var fps_arr = new Array(50);
-var lastloop = new Date();
+var latency_arr = new Array(50);
+var last_loop = new Date();
 
-function loop() {
-    let thisloop = new Date();
-    fps = Math.floor(1000 / (thisloop - lastloop));
-    lastloop = thisloop;
+// calculating average fps and latency
+function calcPerformance() {
 
-    if (typeof fps_arr[fps_arr.length - 1] != 'undefined') fps_arr.shift();
+    let this_loop = new Date();
+    let this_latency = this_loop - last_loop;
+    fps = Math.floor(1000 / (this_latency));
+    last_loop = this_loop;
+
+    if (typeof fps_arr[fps_arr.length - 1] != 'undefined') {
+        fps_arr.shift();
+        latency_arr.shift();
+    }
     fps_arr.push(fps);
+    latency_arr.push(this_latency);
 
-    let fps_sum = 0;
-    fps_arr.forEach(num => {
-        fps_sum += num;
-    });
+    var fps_sum = latency_sum = 0;
+    for (let i = 0; i < fps_arr.length; i++) {
+        fps_sum += fps_arr[i];
+        latency_sum += latency_arr[i];
+    }
 
-    fpsEl.innerHTML = Math.floor(fps_sum / fps_arr.length);
+    let fps_avg = Math.floor(fps_sum / fps_arr.length);
+    let latency_avg = Math.floor(latency_sum / latency_arr.length);
+
+    performanceEl.innerHTML = `${fps_avg}fps&emsp;${latency_avg}ms`;
+}
+
+// animation loop
+function loop() {
+    calcPerformance();
+    // changing height of the rectangles by frequency data analyser //
 
     array = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(array);
 
     for (let i = 0; i < mainRectangles.length; i++) {
-        //          Step variants           //
-        //
-        // From the start:
-        // let curr_i = i;
-        //
-        // From the start with scaled step:
-        // let curr_i = i * Math.floor(array.length / mainRectangles.length);
-        // 
-        // From the middle:
-        // let curr_i = i + Math.floor(array.length / 2 - mainRectangles.length / 2);
-        //
-        // From the end:
-        // let curr_i = i + Math.floor(array.length - mainRectangles.length);
-        //
-        //////////////////////////////////////
-
-        // There will be used with 2nd one variant
-        // Last elements seems not changes a lot
-        // and because of it let's decrease step by 5
-
-        let curr_i = i * Math.floor(array.length / mainRectangles.length - 5);
-        let curr_height = Math.floor(array[curr_i] * heightOffset);
-
-        let mRectStyle = mainRectangles[i].rect.style;
-        let mrrRectStyle = mirrorRectangles[i].rect.style;
-        
-        mRectStyle.height = mrrRectStyle.height = `${curr_height}px`;
+        let curr_i = i * (array.length / mainRectangles.length);
+        mainRectangles[i].rect.style.height = `${array[curr_i] * heightOffset}px`;
+        mirrorRectangles[i].rect.style.height = `${array[curr_i]}px`;
     }
 
     if (!audio.paused) {
         window.requestAnimationFrame(loop);
     }
+    //////////////////////////////////////////////////////////////////
 }

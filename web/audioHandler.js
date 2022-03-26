@@ -3,19 +3,33 @@ const inputEl = document.querySelector('input');
 const sendButton = document.getElementById('sendButton');
 const placeHolder = document.getElementsByClassName('placeholder');
 
+
 sendButton.addEventListener('click', sendEvent);
 stopButton.addEventListener('click', stopAudio);
-audio.addEventListener('ended', (event) => {
-    for (let i = 0; i < mainRectangles.length; i++) {
-        mainRectangles[i].rect.style.height = mirrorRectangles[i].rect.style.height = '2px';
-    }
+audio.addEventListener('ended', resetAudio);
+
+function resetHeight() {
+    return new Promise(resolve => {
+        setTimeout(() => { 
+            for (let i = 0; i < mainRectangles.length; i++) {
+                mainRectangles[i].rect.style.height = mirrorRectangles[i].rect.style.height = '2px';
+            }
+            resolve('resolved');
+        }, 10);
+    })
+}
+
+async function resetAudio() {
+    const res = await resetHeight();
+    console.log(res);
     elementsApperance('show', inputEl, sendButton, placeHolder[0])
     playButton.src = 'materials/play.svg';
-});
+};
 
 function stopAudio() {
     audio.pause();
-    audio.currentTime = audio.duration;
+    audio.currentTime = 0;
+    resetAudio();
 }
 
 // hiding input and send button after pressing it
@@ -37,6 +51,8 @@ function elementsApperance(mode, ...elements) {
         element.style.visibility = el_visibility;
     }); 
 }
+
+callPython('https://www.youtube.com/watch?v=vjWwR5FGj1k');
 
 // Button click
 function sendEvent() {

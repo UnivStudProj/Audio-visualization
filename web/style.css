@@ -37,11 +37,12 @@ body {
     filter: blur(3px);
 }
 
-#fps_drops {
-    top: 0;
+#performance {
+    bottom: 0;
+    right: 0;
     margin: 0;
     position: fixed;
-    color: hsla(108, 100%, 50%, 0.644);
+    color: hsla(108, 0%, 50%, 0.644);
     font-size: 25px;
 }
 
