@@ -25,9 +25,8 @@ function resetHeight() {
 // reseting elements to default state
 async function resetAudio() {
     await resetHeight();
-    elementsApperance('show', inputEl, sendButton, placeHolder[0])
     playButton.src = 'materials/play.svg';
-    audioTime.innerHTML = audio.duration.substring(3);
+    calcTime();
 };
 
 // play button event
@@ -53,9 +52,10 @@ function stopAudio() {
     resetAudio();
 }
 
-const rAmount = 64;
-const rMargins = 4; // margin-left + margin-right in px
-const rWidth = innerWidth / rAmount - rMargins;
+const rectAmount = 60;
+const rectMargins = 2 * 2; // margin-left + margin-right in px (distance between rectangles) 
+const widthMargins = 240 * 2;
+const rectWidth = ((innerWidth - widthMargins) / rectAmount) - rectMargins;
 
 class CustomRect {
     constructor(className, container) {
@@ -68,16 +68,16 @@ class CustomRect {
     #rCrate() {
         this.rect = document.createElement('div');
         this.rect.className = this.className;
-        this.rect.style.width = `${rWidth}px`;
+        this.rect.style.width = `${rectWidth}px`;
         this.container.appendChild(this.rect);
     }
 }
 
-const mainRectangles = new Array(rAmount);
-const mirrorRectangles = new Array(rAmount);
+const mainRectangles = new Array(rectAmount);
+const mirrorRectangles = new Array(rectAmount);
 
 // creating 2 types of rectangles
-for (let i = 0; i < rAmount; i++) {
+for (let i = 0; i < rectAmount; i++) {
     let mRect = new CustomRect('rectangle', container1);
     mainRectangles[i] = mRect;
 
@@ -96,15 +96,11 @@ function preparation() {
     src.connect(analyser).connect(gainNode).connect(context.destination);
 
     gainNode.gain.value = 0.5;
-    analyser.fftSize = rAmount * 2;
+    analyser.fftSize = 256;
     analyser.smoothingTimeConstant = 0.8;
 
     loop();
 }
-
-const maxHeight = Math.floor(innerHeight / 2);
-const maxInt = 255;
-const heightOffset = maxHeight / maxInt;
 
 var fps_arr = new Array(50);
 var latency_arr = new Array(50);
@@ -156,13 +152,17 @@ function calcTime() {
     audioTime.innerHTML = `${MinutesLeft}:${SecondsLeft}`;
 }
 
+const maxHeight = Math.floor(innerHeight / 2);
+const maxInt = 255;
+const heightOffset = maxHeight / maxInt;
+
 // calculating the height of the rectangles
 function calcHeight() {
     let int8_arr = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(int8_arr);
 
     for (let i = 0; i < mainRectangles.length; i++) {
-        let curr_i = i * (int8_arr.length / mainRectangles.length);
+        let curr_i = Math.floor(i * (int8_arr.length / mainRectangles.length));
         mainRectangles[i].rect.style.height = `${int8_arr[curr_i] * heightOffset}px`;
         mirrorRectangles[i].rect.style.height = `${int8_arr[curr_i] * heightOffset}px`;
     }
