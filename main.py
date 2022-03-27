@@ -14,7 +14,7 @@ def fromJS(url):
         best_audio = video.getbestaudio(preftype=audio_type)
         
         message = {
-            'type'          : 'string',
+            'type'          : 'object',
             'url'           : best_audio.url,
             'thumbnail'     : video.getbestthumb(),
             'title'         : video.title,

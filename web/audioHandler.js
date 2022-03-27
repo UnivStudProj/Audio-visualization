@@ -3,38 +3,14 @@ const inputEl = document.querySelector('input');
 const sendButton = document.getElementById('sendButton');
 const placeHolder = document.getElementsByClassName('placeholder');
 
-const audiothumb = document.getElementById('audio-thumbnail');
-const audiotitle = document.getElementById('audio-title');
+const audioInfo = document.getElementsByClassName('audio-info')[0];
+const audioThumb = document.getElementById('audio-thumbnail');
+const audioTitle = document.getElementById('audio-title');
 const audioTime = document.getElementById('audio-time');
 
 sendButton.addEventListener('click', sendEvent);
-stopButton.addEventListener('click', stopAudio);
-audio.addEventListener('ended', resetAudio);
 
-function wait() {
-    return new Promise(resolve => {
-        setTimeout(() => { 
-            for (let i = 0; i < mainRectangles.length; i++) {
-                mainRectangles[i].rect.style.height = mirrorRectangles[i].rect.style.height = '2px';
-            }
-            resolve('resolved');
-        }, 10);
-    })
-}
-
-async function resetAudio() {
-    await wait();
-    elementsApperance('show', inputEl, sendButton, placeHolder[0])
-    playButton.src = 'materials/play.svg';
-};
-
-function stopAudio() {
-    audio.pause();
-    audio.currentTime = 0;
-    resetAudio();
-}
-
-// hiding input and send button after pressing it
+// hiding input and send button
 function elementsApperance(mode, ...elements) {
     var el_opacity, el_visibility;
 
@@ -54,12 +30,14 @@ function elementsApperance(mode, ...elements) {
     }); 
 }
 
-callPython('https://www.youtube.com/watch?v=vjWwR5FGj1k');
+callPython('https://www.youtube.com/watch?v=_TTKMO1b7bM');
 
 // Button click
 function sendEvent() {
     sendButton.removeEventListener('click', sendEvent);
     elementsApperance('hide', inputEl, sendButton, placeHolder[0]);
+    audioInfo.style.opacity = 0;
+    resetHeight();
 
     let url = inputEl.value;
     callPython(url);
@@ -80,8 +58,9 @@ function toJS(msg) {
     } else {
         audio.crossOrigin = 'anonymous';
         audio.src = msg.url;
-        audiothumb.src = msg.thumbnail;
-        audiotitle.innerHTML = msg.title;
-        audioTime.innerHTML = msg.duration;
+        audioThumb.src = msg.thumbnail;
+        audioTitle.innerHTML = msg.title;
+        audioTime.innerHTML = msg.duration.substring(3);
     }
+    audioInfo.style.opacity = 1;
 }

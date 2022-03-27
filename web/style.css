@@ -32,7 +32,8 @@ body {
 }
 
 .rectangle--mirror {
-    background: #FF55FE;
+    background: hsl(300, 100%, 37%);
+    box-shadow: 0px 0px 50px hsl(300, 100%, 37%);
     transform: none;
     filter: blur(3px);
 }
@@ -42,6 +43,7 @@ body {
     right: 0;
     margin: 0;
     position: fixed;
+    user-select: none;
     color: hsla(108, 0%, 50%, 0.644);
     font-size: 25px;
 }
@@ -54,9 +56,9 @@ body {
 
 .custom-field input {
     color: white;
+    background: transparent;
     border: 2px solid hsla(311, 80%, 96%, 0.1);
     border-radius: 3px;
-    background: transparent;
     width: 250px;
     font-size: 14px;
     outline: none;
@@ -70,6 +72,7 @@ body {
 .placeholder {
     position: fixed;
     pointer-events: none;
+    user-select: none;
     top: calc(30px + 11px);
     right: calc(85px + 220px);
     transform: translateY(-50%);
@@ -97,13 +100,14 @@ input:focus {
 }
 
 #sendButton {
+    user-select: none;
     position: fixed;
-    top: calc(30px - 6px);
+    text-align: center;
     font-family: Arial, Helvetica, serif;
+    top: calc(30px - 6px);
     width: 50px;
     line-height: 30px;
     float: right;
-    text-align: center;
     margin-left: 10px;
     color: hsla(311, 80%, 96%, 0.1);
     border: 2px solid hsla(311, 80%, 96%, 0.1);
@@ -123,6 +127,7 @@ input:focus {
 }
 
 .audio-controls {
+    user-select: none;
     position: fixed;
     display: flex;
     width: 140px;
@@ -143,15 +148,29 @@ input:focus {
 }
 
 .audio-info {
+    opacity: 0;
     position: fixed;
     display: flex;
     top: 55%;
     left: 15%;
+    transition: opacity 0.3s;
 }
 
 #audio-title, #audio-time {
     margin-left: 40px;
     font-size: 20pt;
+    font-family: Helvetica;
     color: #FDEDFA;
     text-shadow: 0px 0px 10px #FF55FE;
+}
+
+#audio-time {
+    position: fixed;
+    user-select: none;
+    right: 20%;
+}
+
+#audio-thumbnail {
+    user-select: none;
+    box-shadow: 0px 0px 10px #FDEDFA;
 }
