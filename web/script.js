@@ -6,9 +6,16 @@ const performanceEl = document.getElementById('performance');
 const playButton = document.getElementById('playButton');
 const stopButton = document.getElementById('stopButton');
 
+const slider = document.getElementsByClassName('slider')[0];
+const fill = document.getElementsByClassName('fill')[0];
+
 playButton.addEventListener('click', playAudio);
 stopButton.addEventListener('click', stopAudio);
 audio.addEventListener('ended', resetAudio);
+
+slider.oninput = function() {
+    fill.style.width = slider.value + '%';
+}
 
 // reseting height of the rectangles
 function resetHeight() {
