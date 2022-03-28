@@ -15,6 +15,7 @@ audio.addEventListener('ended', resetAudio);
 
 slider.oninput = function() {
     fill.style.width = slider.value + '%';
+    gainNode.gain.value = slider.value / 100;
 }
 
 // reseting height of the rectangles
@@ -92,18 +93,18 @@ for (let i = 0; i < rectAmount; i++) {
     mirrorRectangles[i] = mrrRect;
 }
 
-var context, analyser;
+var context, analyser, gainNode;
 
 // creating necessary interfaces
 function preparation() {
     context = new AudioContext();
     analyser = context.createAnalyser();
-    const gainNode = context.createGain();
+    gainNode = context.createGain();
     const src = context.createMediaElementSource(audio);
     src.connect(analyser).connect(gainNode).connect(context.destination);
 
     gainNode.gain.value = 0.5;
-    analyser.fftSize = 256;
+    analyser.fftSize = 128;
     analyser.smoothingTimeConstant = 0.8;
 
     loop();
@@ -161,7 +162,7 @@ function calcTime() {
 
 const maxHeight = Math.floor(innerHeight / 2);
 const maxInt = 255;
-const heightOffset = maxHeight / maxInt;
+const heightScale = maxHeight / maxInt * 0.7;
 
 // calculating the height of the rectangles
 function calcHeight() {
@@ -169,9 +170,10 @@ function calcHeight() {
     analyser.getByteFrequencyData(int8_arr);
 
     for (let i = 0; i < mainRectangles.length; i++) {
-        let curr_i = Math.floor(i * (int8_arr.length / mainRectangles.length));
-        mainRectangles[i].rect.style.height = `${int8_arr[curr_i] * heightOffset}px`;
-        mirrorRectangles[i].rect.style.height = `${int8_arr[curr_i] * heightOffset}px`;
+        let height = int8_arr[i] * heightScale;
+
+        mainRectangles[i].rect.style.height = `${height}px`;
+        mirrorRectangles[i].rect.style.height = `${height}px`;
     }
 }
 
