@@ -38,4 +38,4 @@ def check_audiostreams(audiostreams):
     return 'any'
 
 
-eel.start('index.html');
+eel.start('index.html', size=(1920, 1080));

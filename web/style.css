@@ -46,7 +46,7 @@ body {
     margin: 0;
     position: fixed;
     user-select: none;
-    color: hsla(108, 0%, 50%, 0.644);
+    color: hsla(108, 0%, 50%, 0.5);
     font-size: 25px;
 }
 
@@ -146,7 +146,7 @@ body {
 #playButton, #stopButton {
     width: 70px;
     height: auto;
-    opacity: 0.3;
+    opacity: 0.1;
     transition: opacity 0.3s, filter 0.3s;
 }
 
@@ -165,7 +165,7 @@ body {
     position: fixed;
     display: flex;
     top: 55%;
-    left: 240px;
+    left: calc(240px + 60px);
     transition: opacity 0.3s;
 }
 
